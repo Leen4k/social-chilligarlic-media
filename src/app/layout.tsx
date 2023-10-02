@@ -1,8 +1,10 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Figtree } from 'next/font/google'
+import Navbar from './components/Navbar'
+import { BiSearchAlt } from 'react-icons/bi'
 
-const inter = Inter({ subsets: ['latin'] })
+const font = Figtree({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,9 +18,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Navba
-        {children}
+      <body className={font.className}>
+          <div className="grid grid-cols-12 md:px-20 justify-center">
+            <Navbar />
+            {children}
+            <div className="col-span-3 hidden lg:flex lg:flex-col px-2 py-1">
+              <form action="" className="bg-secondary p-2 rounded-full px-4 flex gap-2 items-center">
+                <BiSearchAlt />
+                <input type="text" placeholder='Search' className="bg-secondary focus:outline-none" />
+              </form>
+            </div>
+          </div>
       </body>
     </html>
   )
