@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Figtree } from 'next/font/google'
 import Navbar from './components/Navbar'
 import { BiSearchAlt } from 'react-icons/bi'
+import AuthProvider from './components/AuthProvider'
 
 const font = Figtree({ subsets: ['latin'] })
 
@@ -19,16 +20,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
+        <AuthProvider>
           <div className="grid grid-cols-12 md:px-20 justify-center">
-            <Navbar />
-            {children}
-            <div className="col-span-3 hidden lg:flex lg:flex-col px-2 py-1">
-              <form action="" className="bg-secondary p-2 rounded-full px-4 flex gap-2 items-center">
-                <BiSearchAlt />
-                <input type="text" placeholder='Search' className="bg-secondary focus:outline-none" />
-              </form>
+              <Navbar />
+              {children}
+              <div className="col-span-3 hidden lg:flex lg:flex-col px-2 py-1">
+                <form action="" className="bg-secondary p-2 rounded-full px-4 flex gap-2 items-center">
+                  <BiSearchAlt />
+                  <input type="text" placeholder='Search' className="bg-secondary focus:outline-none" />
+                </form>
+              </div>
             </div>
-          </div>
+        </AuthProvider>
       </body>
     </html>
   )

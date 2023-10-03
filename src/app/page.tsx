@@ -1,10 +1,10 @@
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
 import React from 'react'
+import { authOptions } from './api/auth/[...nextauth]/route';
 
 const page = async () => {
-  const session = await getServerSession();
-  console.log(session);
+
   return (
     <div className="col-span-10 lg:col-span-6 border-r-2 border-slate-100">
       <div className="p-4 font-bold text-xl">
