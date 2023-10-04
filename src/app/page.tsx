@@ -1,9 +1,26 @@
+"use client"
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
 import React from 'react'
 import { authOptions } from './api/auth/[...nextauth]/route';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
-const page = async () => {
+const fetchPost = async () => {
+  try{
+    const {data} = await axios.get("api/posts")
+    return data;
+  }catch(err){
+    console.log(err)
+  }
+}
+
+const page = () => {
+  const {data, error, isLoading} = useQuery({queryFn: fetchPost, queryKey: ["posts"]})
+
+  if(error) throw error;
+  if(isLoading) return "Loading...";
+  console.log(data)
 
   return (
     <div className="col-span-10 lg:col-span-6 border-r-2 border-slate-100">
