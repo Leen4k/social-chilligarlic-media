@@ -16,6 +16,7 @@ const Addpost = ({image}:AddpostProps) => {
     let [isOpen, setIsOpen] = useState<boolean>(false)
     const [title, setTitle] = useState<string | "">("");
     const [isDisabled, setIsDisabled] = useState(false);
+    const queryCLient = useQueryClient();
     let toastPostID: string
 
     function closeModal() {
@@ -32,12 +33,13 @@ const Addpost = ({image}:AddpostProps) => {
     {
         onError: (error) => {
             if(error instanceof AxiosError){
-                toast.error(error?.response?.data,{id:toastPostID})
+                toast.error(error?.response?.data,{id:toastPostID}) 
             }
             setIsDisabled(false)
         },
         onSuccess: (data) => {
             toast.success("Tweet is posted",{id:toastPostID})
+            queryCLient.invalidateQueries(["posts"]);
             setTitle("");
             setIsDisabled(false)
             setIsOpen(false); 

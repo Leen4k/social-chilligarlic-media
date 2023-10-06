@@ -15,6 +15,40 @@ model Post {
   title     String
   userId    String
   user      User     @relation(fields: [userId], references: [id])
+  hearts    Heart[]
+  comments   Comment[]
+}
+
+model Heart {
+  id      String @id @default(cuid())
+  postId  String
+  userId  String
+  post     Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id String @id @default(cuid())
+  message String
+  postId String
+  userId String
+  createdAt DateTime @default(now())
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  posts         Post[]
+  comments      Comment[]
+  hearts        Heart[]
+  @@map("users")
 }
 
 
@@ -46,19 +80,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
-}
-
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  posts         Post[]
-
-  @@map("users")
 }
 
 model VerificationToken {
