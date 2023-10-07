@@ -33,7 +33,7 @@ const Editpost = ({avatar, name, title, setTitle, comments, id, isOpen, openModa
   const queryClient = useQueryClient();
 
  
-  const {mutate} = useMutation(
+  const {mutate,isLoading} = useMutation(
     async () => await axios.delete(`api/userPosts/${post_id}`),{
       onError: (err) => {
         console.log(err)
@@ -48,8 +48,11 @@ const Editpost = ({avatar, name, title, setTitle, comments, id, isOpen, openModa
   )
 
   const deletePost =  () => {
-    deleteToastId = toast.loading("Deleting post...",{id: deleteToastId})
     mutate(post_id);
+  }
+
+  if (isLoading) {
+    deleteToastId = toast.loading("Deleting post...")
   }
 
     
@@ -99,7 +102,7 @@ const Editpost = ({avatar, name, title, setTitle, comments, id, isOpen, openModa
                       </form>
 
               
-                      <form onSubmit={()=>{}} className="flex items-center gap-x-2 py-2 flex-1">
+                      <form className="flex items-center gap-x-2 py-2 flex-1">
                           <input type="file" className="basis-4/12" />
                           <button type="submit" onClick={(e)=>{e.preventDefault();deletePost()}} className="disabled:cursor-not-allowed flex basis-4/12 items-end gap-4 bg-red-400 text-white rounded-full font-semibold py-2 w-full justify-center"><span>Delete Post</span></button>
                           <button type="submit" onClick={openModal} className="disabled:cursor-not-allowed flex basis-4/12 items-end gap-4 bg-primary text-white rounded-full font-semibold py-2 w-full justify-center"><span>Update Post</span></button>

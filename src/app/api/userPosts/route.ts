@@ -17,7 +17,7 @@ export const GET = async (req:NextRequest, res:NextRequest) => {
                 posts: {
                     orderBy: {
                         createdAt: "desc"
-                    },
+                     },
                     include: {
                         comments: true
                     }

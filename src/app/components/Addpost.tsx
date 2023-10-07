@@ -18,6 +18,7 @@ const Addpost = ({image}:AddpostProps) => {
     const [isDisabled, setIsDisabled] = useState(false);
     const queryCLient = useQueryClient();
     let toastPostID: string
+    
 
     function closeModal() {
       setIsOpen(false)
@@ -28,7 +29,7 @@ const Addpost = ({image}:AddpostProps) => {
     }
 
     //create a post
-    const {mutate} = useMutation(
+    const {mutate,isLoading} = useMutation(
         async (title:string) => await axios.post("/api/posts",{title}),
     {
         onError: (error) => {
@@ -49,9 +50,16 @@ const Addpost = ({image}:AddpostProps) => {
     const handleSubmit = async (e:React.FormEvent) => {
         e.preventDefault();  
         setIsDisabled(true);
-        toastPostID = toast.loading("Posting Tweet...",{id:toastPostID})
         mutate(title);
      }
+
+     if(isLoading){
+      toastPostID = toast.loading("Posting Tweet")
+    }
+
+
+
+
 
   return (
     <>
