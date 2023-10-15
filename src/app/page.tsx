@@ -38,7 +38,7 @@ const page = () => {
         </div>
       <div className="flex flex-col h-screen overflow-scroll">
         {data?.map((post)=>(
-          <Post key={post.id} id={post.id} comments={post.comments} postTitle={post.title} name={post.user.name} avatar={post.user.image} />
+          <Post heart={post.hearts} key={post.id} id={post.id} comments={post.comments} postTitle={post.title} name={post.user.name} avatar={post.user.image} />
         ))} 
       </div>
     </div>

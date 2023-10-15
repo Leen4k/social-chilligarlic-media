@@ -42,7 +42,11 @@ export const GET = async (req:NextRequest, res:NextRequest) => {
             include: {
                 user: true,      
                 comments: true,
-                hearts: true,
+                hearts: {
+                    include: {
+                        user: true
+                    }
+                }
             },
             orderBy: {
                 createdAt: "desc" 

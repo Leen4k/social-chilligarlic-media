@@ -11,4 +11,5 @@ export interface PostProps {
         id: string
         postId: string
     }
+    hearts?: string[]
 }

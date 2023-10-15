@@ -37,7 +37,7 @@ const page = ({params}:ParamsProps) => {
 
     const queryClient = useQueryClient();
     let commentToastId: string
-    const {mutate} = useMutation(
+    const {mutate,isLoading:loading} = useMutation(
         async (data:CommentProps) => (axios.post(`/api/posts/addComment`, {data})),
         {
             onSuccess: (data) => {
@@ -58,7 +58,7 @@ const page = ({params}:ParamsProps) => {
     const submitComment = async (e:React.FormEvent) => {
         e.preventDefault();
         setDisabled(true);
-        commentToastId = toast.loading("Tweeting...", {id:commentToastId})
+        // commentToastId = toast.loading("Tweeting...", {id:commentToastId})
         mutate({title, postId:post_id})
     }  
 
@@ -71,6 +71,10 @@ const page = ({params}:ParamsProps) => {
 
     if(isLoading) return "Loading...";
     console.log(data)
+
+    if(loading){
+        commentToastId = toast.loading("Tweeting...")
+    }
 
   return (
     <div className="h-screen overflow-scroll col-span-10 lg:col-span-6 border-r-2 border-slate-100">
