@@ -36,7 +36,6 @@ export const DELETE = async (req:NextRequest, {params}:any) => {
                 id: post_id,
             }
         })
-        console.log("yayyy")
         return new NextResponse(JSON.stringify(`delete ${post_id}`),{status:200});
     }catch(err:any){
         return new NextResponse(JSON.stringify("error fetching post"),{status:403})

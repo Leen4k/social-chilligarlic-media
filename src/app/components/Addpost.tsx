@@ -1,5 +1,5 @@
 "use client"
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import {FaFeatherPointed} from "react-icons/fa6"
 import { Transition, Dialog } from '@headlessui/react'
 import Image from 'next/image'
@@ -7,6 +7,9 @@ import {RxCross2} from "react-icons/rx"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import { storage } from '../../firebase'
+
 
 interface AddpostProps {  
     image: string | "";
@@ -18,6 +21,10 @@ const Addpost = ({image}:AddpostProps) => {
     const [isDisabled, setIsDisabled] = useState(false);
     const queryCLient = useQueryClient();
     let toastPostID: string
+    const [images, setImages] = useState([]);
+    const [downloadUrls, setDownloadUrls] = useState([]);
+    const [urls, setUrls] = useState([]);
+    const [progress, setProgress] = useState(null); 
     
 
     function closeModal() {
@@ -57,9 +64,55 @@ const Addpost = ({image}:AddpostProps) => {
       toastPostID = toast.loading("Posting Tweet")
     }
 
+    useEffect(() => {
+      const uploadFile = async () => {
+        const downloadURLs = [...downloadUrls];
+  
+        for (let i = 0; i < images.length; i++) {
+          const image = images[i];
+          const storageRef = ref(storage, `/imgFiles/${image.name}`);
+          const uploadTask = uploadBytesResumable(storageRef, image);
+  
+          uploadTask.on("state_changed", (snapshot) => {
+            const newProgress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            setProgress(newProgress);
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+              default:
+                break;
+            }
+          }, (error) => {
+            console.log(error);
+          }, async () => {
+            try {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              downloadURLs.push(downloadURL);
+              setDownloadUrls(downloadURLs);           
+            } catch (error) {
+              console.log(error);
+            } finally {
+              setImages([]);
+            }
+          });
+        }
+      };
+  
+      if (images.length > 0) {
+        uploadFile();
+      }
 
+    }, [images]);
+    console.log(downloadUrls)
 
-
+    const handleImageChange = (e) => {
+      const selectedFiles = e.target.files;
+      setImages([...selectedFiles]);
+  };
 
   return (
     <>
@@ -110,10 +163,14 @@ const Addpost = ({image}:AddpostProps) => {
                         <textarea value={title} onChange={(e)=>{setTitle(e.target.value)}} placeholder="What's on your mind?" name="title" className="h-[100px] focus:outline-none mt-2 text-sm text-gray-500 flex-1"> 
                         </textarea>
                     </form>
+                    {downloadUrls.map(url => (
+                      <div className="flex flex-row gap-2">
+                        <Image src={url} width={60} height={60} alt="post-img"></Image>
+                      </div>
+                    ))}
 
-            
                     <form onSubmit={handleSubmit} className="flex items-center py-2 flex-1">
-                        <input type="file" className="basis-3/4" />
+                        <input type="file" multiple onChange={handleImageChange} className="basis-3/4" />
                         <button type="submit" onClick={openModal} disabled={isDisabled} className="disabled:cursor-not-allowed flex basis-1/4 items-end gap-4 bg-primary text-white rounded-full font-semibold py-2 w-full justify-center"><span>Post</span></button>
                     </form>
                 

@@ -26,7 +26,7 @@ export const POST = async (req:NextRequest,res:NextResponse) => {
         const res = await prisma.post.create({
             data: {
                 title, 
-                userId: prismaUser.id,
+                userId: prismaUser?.id,
             }
         })
         return new NextResponse(JSON.stringify(res), {status: 200});
