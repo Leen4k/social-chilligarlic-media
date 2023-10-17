@@ -17,6 +17,14 @@ model Post {
   user      User     @relation(fields: [userId], references: [id])
   hearts    Heart[]
   comments   Comment[]
+  photos Photo[]
+}
+
+model Photo {
+  id String @id @default(cuid())
+  url String[] 
+  postId String
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Heart {

@@ -1,5 +1,6 @@
 export interface PostProps {
     title: string;
+    photos?: string[];
     id: string;
     createdAt: string
     user: {

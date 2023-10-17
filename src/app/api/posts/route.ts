@@ -5,7 +5,10 @@ import { prisma } from "../../../../prisma/client";
 
 
 export const POST = async (req:NextRequest,res:NextResponse) => {
-    const {title} = await req.json();
+    const {data} = await req.json();
+    const {title,downloadUrls} = data;
+    console.log(title)
+   
     const session = await getServerSession(authOptions);
  
     const prismaUser = await prisma.user.findUnique({
@@ -29,6 +32,19 @@ export const POST = async (req:NextRequest,res:NextResponse) => {
                 userId: prismaUser?.id,
             }
         })
+
+        const postId = res.id;
+
+        if (downloadUrls.length > 0) {
+
+            const photo = await prisma.photo.create({
+                data: {
+                    url: downloadUrls,
+                    postId,
+                }
+            });
+        }
+
         return new NextResponse(JSON.stringify(res), {status: 200});
     }catch(err:any){
         return new NextResponse(err,{status: 500});
@@ -46,7 +62,8 @@ export const GET = async (req:NextRequest, res:NextRequest) => {
                     include: {
                         user: true
                     }
-                }
+                },
+                photos: true
             },
             orderBy: {
                 createdAt: "desc" 

@@ -15,6 +15,11 @@ interface AddpostProps {
     image: string | "";
 }
 
+interface PostProps {
+  downloadUrls?: string[];
+  title: string;
+}
+
 const Addpost = ({image}:AddpostProps) => {
     let [isOpen, setIsOpen] = useState<boolean>(false)
     const [title, setTitle] = useState<string | "">("");
@@ -37,7 +42,7 @@ const Addpost = ({image}:AddpostProps) => {
 
     //create a post
     const {mutate,isLoading} = useMutation(
-        async (title:string) => await axios.post("/api/posts",{title}),
+        async (data:PostProps) => await axios.post("/api/posts",{data}),
     {
         onError: (error) => {
             if(error instanceof AxiosError){
@@ -57,7 +62,7 @@ const Addpost = ({image}:AddpostProps) => {
     const handleSubmit = async (e:React.FormEvent) => {
         e.preventDefault();  
         setIsDisabled(true);
-        mutate(title);
+        mutate({title,downloadUrls});
      }
 
      if(isLoading){
@@ -114,6 +119,13 @@ const Addpost = ({image}:AddpostProps) => {
       setImages([...selectedFiles]);
   };
 
+  const setImageSize = (index) => {
+    if (index === 0){
+      return "col-span-6 row-span-6";
+    }
+    return "col-span-2 row-span-3"
+  }
+
   return (
     <>
         <div className="p-2 hidden lg:flex lg:pr-16 flex-1">
@@ -163,11 +175,11 @@ const Addpost = ({image}:AddpostProps) => {
                         <textarea value={title} onChange={(e)=>{setTitle(e.target.value)}} placeholder="What's on your mind?" name="title" className="h-[100px] focus:outline-none mt-2 text-sm text-gray-500 flex-1"> 
                         </textarea>
                     </form>
-                    {downloadUrls.map(url => (
-                      <div className="flex flex-row gap-2">
-                        <Image src={url} width={60} height={60} alt="post-img"></Image>
-                      </div>
-                    ))}
+                    <div className="grid grid-cols-12 grid-rows-6 gap-2">
+                      {downloadUrls.map((url,index) => (                      
+                          <Image key={index} className={`${setImageSize(index)} w-full`} src={url} width={60} height={60} alt="post-img"></Image>                   
+                      ))}
+                     </div>
 
                     <form onSubmit={handleSubmit} className="flex items-center py-2 flex-1">
                         <input type="file" multiple onChange={handleImageChange} className="basis-3/4" />
