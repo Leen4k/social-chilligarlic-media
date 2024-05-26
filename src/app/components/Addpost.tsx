@@ -50,6 +50,7 @@ const Addpost = ({ image }: AddpostProps) => {
       onSuccess: (data) => {
         toast.success("Tweet is posted", { id: toastPostID });
         queryCLient.invalidateQueries(["posts"]);
+        queryCLient.invalidateQueries(["profile-post"]);
         setTitle("");
         setIsDisabled(false);
         setIsOpen(false);

@@ -11,10 +11,29 @@ import { headers } from "next/headers";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const Navbar = () => {
   const session = useSession();
+  console.log(session.status);
+
+  const fetchSingleUser = async () => {
+    try {
+      const data = await axios.get("/api/user/" + session.data?.user.id);
+      return data;
+    } catch (err) {
+      toast.error("error");
+    }
+  };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["fetchSingleUser"],
+    queryFn: fetchSingleUser,
+  });
   const pathName = usePathname();
+  console.log(data);
 
   return (
     <div className="min-h-screen border-r-2 border-slate-100 col-span-2 lg:col-span-3 min-w-0 h-screen overflow-hidden flex flex-col items-center lg:items-start">

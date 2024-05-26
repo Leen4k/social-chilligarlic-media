@@ -18,7 +18,6 @@ import { RxCross2 } from "react-icons/rx";
 
 const fetchPostDetails = async (post_id: string) => {
   const { data } = await axios.get(`/api/posts/${post_id}`);
-  console.log(data);
   return data;
 };
 
@@ -79,6 +78,7 @@ const page = ({ params }: ParamsProps) => {
   const { data, isLoading } = useQuery<PostProps[]>({
     queryKey: ["detail-post"],
     queryFn: () => fetchPostDetails(post_id),
+    enabled: !!post_id,
   });
 
   const { mutate: deleteComment, isLoading: loadingForDeleteComment } =
