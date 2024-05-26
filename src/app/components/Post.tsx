@@ -87,7 +87,7 @@ const Post = ({
           "grid-cols-2 w-[85%] gap-1"
         }`}
       >
-        {photos?.length > 0 &&
+        {photos &&
           photos[0]?.url?.map((photo: string, index: number) => (
             <Image
               onClick={() => {
