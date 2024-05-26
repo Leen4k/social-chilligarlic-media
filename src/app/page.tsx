@@ -70,6 +70,7 @@ const Page = () => {
     queryFn: ({ pageParam }) => fetchPost(pageParam),
     queryKey: ["posts", searchQuery],
     getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage) return undefined; // Guard clause
       const nextPage =
         lastPage?.length === 5 ? allPages?.length + 1 : undefined;
       return nextPage;
@@ -91,11 +92,6 @@ const Page = () => {
     // },
   });
 
-  // useEffect(() => {
-  //   // if (data && prevData !== null && data.pages.flatMap((page) => page).length > prevData.length) {
-  //     setNewToastPostId(String(Date.now()));
-  //   // }
-  // }, [data, prevData]);
   useEffect(() => {
     if (data && prevData) {
       const newPosts = data.pages
@@ -215,21 +211,22 @@ const Page = () => {
         className="flex flex-col h-screen overflow-scroll"
         ref={containerRef}
       >
-        {data?.pages
-          .flatMap((page) => page)
-          .map((post) => (
-            <Post
-              heart={post?.hearts}
-              photos={post?.photos}
-              key={post?.id}
-              id={post?.id}
-              createdAt={post?.createdAt}
-              comments={post?.comments}
-              postTitle={post?.title}
-              name={post?.user?.name}
-              avatar={post?.user?.image}
-            />
-          ))}
+        {data?.pages &&
+          data?.pages
+            .flatMap((page) => page)
+            .map((post) => (
+              <Post
+                heart={post?.hearts}
+                photos={post?.photos}
+                key={post?.id}
+                id={post?.id}
+                createdAt={post?.createdAt}
+                comments={post?.comments}
+                postTitle={post?.title}
+                name={post?.user?.name}
+                avatar={post?.user?.image}
+              />
+            ))}
         {isFetchingNextPage && (
           <div className="flex flex-1 m-auto justify-center items-center">
             <CgSpinnerAlt className="text-primary animate-spin text-3xl m-auto" />
