@@ -17,7 +17,7 @@
     "axios": "^1.5.1",
     "date-fns": "^3.6.0",
     "encoding": "^0.1.13",
-    "firebase": "^10.5.0",
+    "firebase": "^10.12.1",
     "next": "latest",
     "next-auth": "^4.23.2",
     "react": "latest",
