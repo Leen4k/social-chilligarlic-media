@@ -1,24 +1,26 @@
-import './globals.css'
-import type { Metadata } from 'next'
-import { Figtree } from 'next/font/google'
-import Navbar from './components/Navbar'
-import AuthProvider from './components/AuthProvider'
-import QueryWrapper from './components/QueryWrapper'
-import Search from './components/Search'
+import "./globals.css";
+import type { Metadata } from "next";
+import { Figtree } from "next/font/google";
+import Navbar from "./components/Navbar";
+import AuthProvider from "./components/AuthProvider";
+import QueryWrapper from "./components/QueryWrapper";
+import Search from "./components/Search";
+import { headers } from "next/headers";
 
-
-const font = Figtree({ subsets: ['latin'] })
+const font = Figtree({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'X clone',
-  description: 'X clone',
-}
+  title: "X clone",
+  description: "X clone",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
+
+
   return (
     <html lang="en">
       <body className={font.className}>
@@ -33,5 +35,5 @@ export default function RootLayout({
         </AuthProvider>
       </body>
     </html>
-  )
+  );
 }

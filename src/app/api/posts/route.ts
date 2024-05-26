@@ -52,25 +52,59 @@ export const POST = async (req:NextRequest,res:NextResponse) => {
     
 }
 
-export const GET = async (req:NextRequest, res:NextRequest) => {
-    try{
-        const data = await prisma.post.findMany({
-            include: {
-                user: true,      
-                comments: true,
-                hearts: {
-                    include: {
-                        user: true
-                    }
+export const GET = async (req: NextRequest, res: NextResponse) => {
+    const { searchParams } = new URL(req.url);
+    const searchQuery = searchParams.get("searchQuery");
+    const page = parseInt(searchParams.get("page") || "") || 1; // Default page is 1
+    const pageSize = parseInt(searchParams.get("pageSize") || "5"); // Default page size is 10
+    console.log(page)
+    try {
+        let postData;
+        if (searchQuery) {
+            postData = await prisma.post.findMany({
+                where: {
+                    OR: [
+                        { title: { contains: searchQuery } },
+                    ]
                 },
-                photos: true
-            },
-            orderBy: {
-                createdAt: "desc" 
-            }
-        })
-        return new NextResponse(JSON.stringify(data),{status:200});
-    }catch(err:any){
-        return new NextResponse(JSON.stringify("error fetching post"),{status:403})
+                include: {
+                    user: true,
+                    comments: true,
+                    hearts: {
+                        include: {
+                            user: true
+                        }
+                    },
+                    photos: true
+                },
+                orderBy: {
+                    createdAt: "desc"
+                },
+                skip: (page - 1) * pageSize,
+                take: pageSize
+            });
+        } else {
+            postData = await prisma.post.findMany({
+                include: {
+                    user: true,
+                    comments: true,
+                    hearts: {
+                        include: {
+                            user: true
+                        }
+                    },
+                    photos: true
+                },
+                orderBy: {
+                    createdAt: "desc"
+                },
+                skip: (page - 1) * pageSize,
+                take: pageSize
+            });
+        }
+
+        return new NextResponse(JSON.stringify(postData), { status: 200 });
+    } catch (err: any) {
+        return new NextResponse(JSON.stringify("error fetching posts"), { status: 403 });
     }
-}
+};

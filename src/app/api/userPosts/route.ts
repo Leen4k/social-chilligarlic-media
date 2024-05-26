@@ -19,7 +19,9 @@ export const GET = async (req:NextRequest, res:NextRequest) => {
                         createdAt: "desc"
                      },
                     include: {
-                        comments: true
+                        comments: true,
+                        photos: true,
+                        hearts: true,
                     }
                 }
             }

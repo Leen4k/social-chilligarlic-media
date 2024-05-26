@@ -12,6 +12,8 @@ export const GET = async (req:NextRequest, {params}:any) => {
             },
             include: {
                 user: true,
+                photos: true,
+                hearts: true,
                 comments: {
                     orderBy: {
                         createdAt: "desc"
@@ -27,3 +29,6 @@ export const GET = async (req:NextRequest, {params}:any) => {
         return new NextResponse(JSON.stringify("error fetching post"),{status:403})
     }
 }
+
+
+

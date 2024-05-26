@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Post {
@@ -29,6 +30,7 @@ model Photo {
 
 model Heart {
   id      String @id @default(cuid())
+  emojiName    String?
   postId  String 
   userId  String 
   post     Post @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -45,17 +47,34 @@ model Comment {
   user User @relation(fields: [userId], references: [id])
 }
 
+
+model Follow {
+  id          String    @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime  @default(now())
+  follower    User      @relation("Follower", fields: [followerId], references: [id])
+  following   User      @relation("Following", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
+
+
+
 model User {
   id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
+  cover         String?
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
   comments      Comment[]
   hearts        Heart[]
+  follows       Follow[]       @relation("Follower")
+  followers     Follow[]       @relation("Following")
   @@map("users")
 }
 

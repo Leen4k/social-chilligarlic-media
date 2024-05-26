@@ -18,6 +18,30 @@ export const authOptions = {
     }),
     // ...add more providers here
   ],
+  callbacks: {
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.id = token.sub;
+        const id = session.user.id
+        const user = await prisma.user.findUnique({where:{
+          id: id
+        }})
+        session.user.cover = user.cover
+        session.user.name = user.name
+        session.user.email = user.email
+      }
+      return session;
+    },
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.uid = user.id;
+      }
+      return token;
+    },
+  },
+  session: {
+    strategy: 'jwt',
+  },
 }
 // export default NextAuth(authOptions)
 const handler = NextAuth(authOptions);

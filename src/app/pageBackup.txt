@@ -1,0 +1,134 @@
+"use client"
+import { getServerSession } from 'next-auth'
+import Link from 'next/link'
+import React, { useEffect, useRef, useState } from 'react'
+import { authOptions } from './api/auth/[...nextauth]/route';
+import axios from 'axios';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import Post from './components/Post';
+import { PostProps } from './types/Post';
+import { useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
+import Button from './components/Button';
+
+
+
+const page = () => {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("following");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("searchQuery") || '');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [newToastPostId, setNewToastPostId] = useState<string>();
+  const [prevData, setPrevData] = useState<PostProps[] | null>(null);
+  const [popUpAvatar, setPopUpAvatar] = useState<PostProps[]>([]);
+  const [showToast, setShowToast] = useState(false);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get("searchQuery") || '');
+  }, [searchParams]);
+
+  useEffect(() => {
+    queryClient.invalidateQueries(["posts"]);
+  }, [searchQuery]);
+
+  const fetchPost = async () => {
+    try {
+      const { data } = await axios.get(`api/posts?searchQuery=${searchQuery}`);
+      return data;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Failed to fetch posts');
+    }
+  }
+
+  const { data, error, isLoading } = useQuery<PostProps[]>({
+    queryFn: fetchPost,
+    queryKey: ["posts", searchQuery],
+    onSuccess: (newData) => {
+      if (prevData) {
+        const newPosts = newData.filter((newPost) => !prevData.some((prevPost) => prevPost.id === newPost.id));
+        setPopUpAvatar(newPosts);
+        newPosts.forEach((post) => {
+          console.log(`New post by ${post.user.name}`);
+        });
+        if (newPosts.length > 0) {
+          setShowToast(true);
+        }
+      }
+      setPrevData(newData);
+    },
+  });
+
+  useEffect(() => {
+    if (data && prevData !== null && data.length > prevData.length) {
+      setNewToastPostId(String(Date.now()));
+    }
+  }, [data, prevData]);
+
+  useEffect(() => {
+    if (showToast && popUpAvatar.length > 0 && newToastPostId) {
+      toast.success(
+        <div className="flex gap-2 items-center">
+          {popUpAvatar.map((post) => (
+            <img key={post.id} src={post.user.image} alt={post.user.name} className="w-6 h-6 rounded-full" />
+          ))}
+          posted
+        </div>, { duration: Infinity, id: newToastPostId }
+      );
+    }
+  }, [showToast, popUpAvatar, newToastPostId]);
+
+  const handleScroll = () => {
+    if (containerRef.current) {
+      const containerHeight = containerRef.current.scrollHeight - containerRef.current.clientHeight;
+      const containerScrollTop = containerRef.current.scrollTop;
+      const scrolled = (containerScrollTop / containerHeight) * 100;
+      if (scrolled === 0) {
+        toast.dismiss();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.addEventListener("scroll", handleScroll, { passive: true });
+    }
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [newToastPostId]);
+
+  if (error) throw error;
+  if (isLoading) return "Loading...";
+
+  return (
+    <div className="h-screen overflow-scroll col-span-10 lg:col-span-6 border-r-2 border-slate-100">
+      <div className="flex flex-col sticky left-0 right-0">
+        <div className="flex text-center">
+          <Link href="/" className="flex-1 py-4">For you</Link>
+          <Link href="/following" className="flex-1 py-4">Following {searchQuery}</Link>
+        </div>
+      </div>
+      <div className="flex flex-col h-screen overflow-scroll" ref={containerRef}>
+        {data?.map((post) => (
+          <Post
+            heart={post.hearts}
+            photos={post.photos}
+            key={post.id}
+            id={post.id}
+            createdAt={post.createdAt}
+            comments={post.comments}
+            postTitle={post.title}
+            name={post.user.name}
+            avatar={post.user.image}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default page; 
