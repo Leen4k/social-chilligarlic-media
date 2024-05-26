@@ -190,8 +190,6 @@ const Page = () => {
   const router = useRouter();
   console.log(session);
 
-  if (error) throw error;
-
   if (isLoading) return <Loading />;
 
   if (session.status === "unauthenticated") {
