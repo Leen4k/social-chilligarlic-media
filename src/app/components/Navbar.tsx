@@ -10,6 +10,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const Navbar = () => {
   const session = useSession();
@@ -17,8 +18,15 @@ const Navbar = () => {
 
   return (
     <div className="min-h-screen border-r-2 border-slate-100 col-span-2 lg:col-span-3 min-w-0 h-screen overflow-hidden flex flex-col items-center lg:items-start">
-      <div className="py-2 px-6 rounded-full cursor-pointer">
-        <FaXTwitter className="text-3xl" />
+      <div className="py-2 relative flex justify-start items-center px-6 rounded-full cursor-pointer">
+        {/* <FaXTwitter className="text-3xl" /> */}
+        <Image
+          width="30"
+          height="30"
+          className="object-fill scale-150 ml-2"
+          src="/logo.png"
+          alt="logo"
+        ></Image>
       </div>
       <div className="flex flex-col lg:w-full">
         <div className="p-2">
