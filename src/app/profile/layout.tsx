@@ -22,9 +22,12 @@ const fetchUserProfile = async (): Promise<ProfileProps> => {
   // console.log({session:session})
   const { id: user_id } = session?.user;
   console.log(user_id);
-  const res = await fetch(`http://localhost:3000/api/user/${user_id}`, {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `https://social-chilligarlic-media.vercel.app/api/user/${user_id}`,
+    {
+      cache: "no-store",
+    }
+  );
   const data = await res.json();
   // console.log(data)
   return data;
