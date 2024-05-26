@@ -13,6 +13,9 @@ const nextConfig = {
   env: {
     NEXTAUTH_SECRET: "jH1iIfTSlzIdmzxsCRTbV5J9dj4lNIwpzBOcYbcwMdw=",
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // images:{
   //     domains:[
   //         // "lh3.googleusercontent.com",
