@@ -103,7 +103,7 @@ const Page = () => {
         .filter(
           (newPost) => !prevData.some((prevPost) => prevPost.id === newPost.id)
         );
-      if (newPosts.length > 0) {
+      if (newPosts?.length > 0) {
         setPopUpAvatar(newPosts);
         setNewToastPostId(String(Date.now()));
       }

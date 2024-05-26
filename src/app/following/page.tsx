@@ -29,7 +29,7 @@ const page = () => {
     queryKey: ["posts-following"],
   });
 
-  if (error) throw error;
+  // if (error) throw error;
   if (isLoading) return <Loading />;
   console.log(data);
 
