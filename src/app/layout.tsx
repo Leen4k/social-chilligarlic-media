@@ -10,8 +10,8 @@ import { headers } from "next/headers";
 const font = Figtree({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "X clone",
-  description: "X clone",
+  title: "chilligarlic media",
+  description: "social media inspired by twitter and facebook",
 };
 
 export default function RootLayout({
@@ -19,8 +19,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-
   return (
     <html lang="en">
       <body className={font.className}>
