@@ -15,7 +15,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { storage } from "@/firebase";
+import { storage } from "../../../firebase";
 
 type EditProps = {
   id: string;

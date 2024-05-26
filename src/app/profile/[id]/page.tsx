@@ -8,7 +8,7 @@ import Input from "@/app/components/Input";
 import Button from "@/app/components/Button";
 import Link from "next/link";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "@/firebase";
+import { storage } from "../../../../firebase";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
